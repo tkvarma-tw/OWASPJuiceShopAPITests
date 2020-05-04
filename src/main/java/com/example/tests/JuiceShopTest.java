@@ -1,31 +1,20 @@
 package com.example.tests;
 
 import com.example.models.Customer;
+import com.example.models.SearchResult;
 import com.example.models.SecurityAnswers;
 import com.example.models.SecurityQuestion;
-import com.github.javafaker.Faker;
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.specification.RequestSpecification;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.Locale;
+import java.util.Collections;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
 
 
-public class JuiceShopTest {
-
-    private static RequestSpecification requestSpecification;
-    private static Faker faker;
-
-    @BeforeAll
-    public static void createRequestSpecification() {
-        faker = new Faker(new Locale("en-US"));
-        requestSpecification = new RequestSpecBuilder()
-                .setBaseUri("https://juice-shop.herokuapp.com/api/")
-                .build();
-    }
+public class JuiceShopTest extends BaseTest {
 
     @Test
     public void createCustomerSuccessfully() {
@@ -33,7 +22,7 @@ public class JuiceShopTest {
         int UserId = given().spec(requestSpecification)
                 .and()
                 .body(getCustomer())
-                .post("/users")
+                .post("api/users")
                 .then()
                 .statusCode(201)
                 .extract()
@@ -42,9 +31,25 @@ public class JuiceShopTest {
         given().spec(requestSpecification)
                 .and()
                 .body(getSecurityAnswers(UserId))
-                .post("/SecurityAnswers")
+                .post("api/SecurityAnswers")
                 .then()
                 .statusCode(201);
+    }
+
+    @Test
+    public void performDefaultSearch() {
+        List<SearchResult> searchResults = given().spec(requestSpecification)
+                .when()
+                .queryParam("q", Collections.emptyList())
+                .get("rest/products/search")
+                .then()
+                .statusCode(304)
+                .body("status", is("success"))
+                .extract().path("data");
+
+        assertThat(searchResults).isNotEmpty();
+        assertThat(searchResults.get(0).getPrice()).isPositive();
+        assertThat(searchResults.get(0).getDeluxePrice()).isPositive();
     }
 
     private SecurityAnswers getSecurityAnswers(int userId) {
