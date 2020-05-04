@@ -1,6 +1,6 @@
 package com.example.tests;
 
-import com.example.helpers.WiremockHelper;
+import com.example.mocks.WiremockHelper;
 import com.github.javafaker.Faker;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;

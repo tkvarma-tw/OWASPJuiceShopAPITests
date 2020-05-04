@@ -16,7 +16,7 @@ public class JuiceShopTest extends BaseTest {
     public void createCustomerSuccessfully() {
         int UserId = given().spec(requestSpecification)
                 .and()
-                .body(getCustomer())
+                .body(customerBuilder())
                 .post("api/users")
                 .then()
                 .assertThat().statusCode(201)
@@ -24,7 +24,7 @@ public class JuiceShopTest extends BaseTest {
 
         given().spec(requestSpecification)
                 .and()
-                .body(getSecurityAnswers(UserId, 1, "asdf"))
+                .body(securityAnswerBuilder(UserId, 1, "asdf"))
                 .post("api/SecurityAnswers")
                 .then()
                 .assertThat().statusCode(201);
@@ -94,12 +94,12 @@ public class JuiceShopTest extends BaseTest {
                 .get("rest/products/search");
     }
 
-    private SecurityAnswers getSecurityAnswers(int userId, int questionId, String answer) {
+    private SecurityAnswers securityAnswerBuilder(int userId, int questionId, String answer) {
         return SecurityAnswers.builder().answer(answer).SecurityQuestionId(questionId)
                 .UserId(userId).build();
     }
 
-    private Customer getCustomer() {
+    private Customer customerBuilder() {
         return Customer.builder()
                 .email(faker.bothify("????##@gmail.com"))
                 .password("password")
