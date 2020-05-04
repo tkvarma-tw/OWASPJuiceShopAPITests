@@ -4,10 +4,7 @@ import com.example.helpers.WiremockHelper;
 import com.github.javafaker.Faker;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Locale;
 
@@ -24,17 +21,5 @@ public class BaseTest {
         requestSpecification = new RequestSpecBuilder()
                 .setBaseUri("https://juice-shop.herokuapp.com/")
                 .build();
-    }
-
-    @BeforeEach
-    @SneakyThrows
-    void setUp() {
-        wireMockServer.start();
-    }
-
-    @AfterEach
-    void tearDown() {
-        wireMockServer.dumpInteractions();
-        wireMockServer.stop();
     }
 }
