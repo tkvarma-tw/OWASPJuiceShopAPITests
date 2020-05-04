@@ -1,6 +1,7 @@
 package com.example.helpers;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.common.ConsoleNotifier;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
@@ -8,7 +9,7 @@ public class WiremockHelper {
     private WireMockServer wireMockServer = null;
 
     public WiremockHelper(int port) {
-        wireMockServer = new WireMockServer(wireMockConfig().port(port));
+        wireMockServer = new WireMockServer(wireMockConfig().port(port).notifier(new ConsoleNotifier(true)));
     }
 
     public void dumpInteractions() {
