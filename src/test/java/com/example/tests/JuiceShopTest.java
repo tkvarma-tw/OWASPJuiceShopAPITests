@@ -12,10 +12,12 @@ import static org.hamcrest.Matchers.*;
 
 public class JuiceShopTest extends BaseTest {
 
+    private static  String userName=null;
     @Test
     public void createCustomerSuccessfully() {
         int UserId = given().spec(requestSpecification)
                 .and()
+                .contentType(ContentType.JSON)
                 .body(customerBuilder())
                 .post("api/users")
                 .then()
@@ -43,7 +45,7 @@ public class JuiceShopTest extends BaseTest {
 
     @Test
     public void addProductToCart() {
-        Authentication authentication = login("asdf@qwer.com", "password")
+        Authentication authentication = login(getUserName(), "password")
                 .then()
                 .assertThat().statusCode(200)
                 .extract().as(LoginResponse.class).getAuthentication();
@@ -99,15 +101,22 @@ public class JuiceShopTest extends BaseTest {
                 .UserId(userId).build();
     }
 
+    private String getUserName(){
+        if (userName == null){
+            userName =  faker.bothify("????##@gmail.com");
+        }
+        return userName;
+    }
     private Customer customerBuilder() {
         return Customer.builder()
-                .email(faker.bothify("????##@gmail.com"))
+                .email(getUserName())
                 .password("password")
                 .passwordRepeat("password")
                 .securityQuestion(SecurityQuestion.builder()
                         .createdAt("2020-05-03T08:51:58.696Z")
                         .updatedAt("2020-05-03T08:51:58.696Z")
                         .question("Your eldest siblings middle name?")
+                        .id(2)
                         .build())
                 .securityAnswer("asdf").build();
     }
